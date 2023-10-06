@@ -9,6 +9,13 @@ struct editorConfig {
   int screencols;
 };
 
+struct abuf {
+  char* buf;
+  int len;
+};
+
+#define ABUF_INIT {NULL, 0}
+
 extern struct editorConfig E;
 
 #endif
