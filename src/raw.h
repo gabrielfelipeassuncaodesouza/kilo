@@ -3,5 +3,6 @@
 
 void raw(void);
 void die(const char* msg);
+int getWinSize(int* rows, int* cols);
 
 #endif

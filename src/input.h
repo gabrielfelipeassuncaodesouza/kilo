@@ -5,5 +5,6 @@
 
 char editorReadKey(void);
 void editorProcessKeyPress(void);
+int getCursorPosition(int* rows, int* cols);
 
 #endif
