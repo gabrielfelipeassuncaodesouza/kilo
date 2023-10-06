@@ -6,6 +6,9 @@
 #define _BSD_SOURCE
 //#define _WIN_SOURCE
 
+#define KILO_VERSION "0.0.1"
+#define TAB_STOP 8
+
 #include <termios.h>
 
 enum editorKey {
@@ -23,6 +26,8 @@ enum editorKey {
 typedef struct rowOfText {
   int size;
   char* text;
+  int rsize;
+  char* render;
 } rowOfText;
 
 struct editorConfig {
@@ -31,6 +36,7 @@ struct editorConfig {
   int screencols;
   int cx;
   int cy;
+  int rx;
   int numRows;
   rowOfText* rows;
   int rowOffset;

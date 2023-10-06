@@ -5,18 +5,34 @@
 #include <string.h>
 #include <unistd.h>
 
+int editorRowCyToRx(rowOfText* row, int cy) {
+  int rx = 0;
+  for(int j = 0; j < cy; j++) {
+    if(row->text[j] == '\t')
+      rx += (TAB_STOP - 1) - (rx % TAB_STOP);
+
+    rx++;
+  }
+  return rx;
+}
+
 void editorScroll(void) {
+  E.rx = 0;
+  if(E.cx < E.numRows) {
+    E.rx = editorRowCyToRx(&E.rows[E.cx], E.cy);
+  }
+
   if(E.cx < E.rowOffset)
     E.rowOffset = E.cx;
 
   if(E.cx >= E.rowOffset + E.screenrows)
     E.rowOffset = E.cx - E.screenrows + 1;
 
-  if(E.cy < E.colOffset)
-    E.colOffset = E.cy;
+  if(E.rx < E.colOffset)
+    E.colOffset = E.rx;
 
-  if(E.cy >= E.colOffset + E.screencols)
-    E.colOffset = E.cy - E.screencols + 1;
+  if(E.rx >= E.colOffset + E.screencols)
+    E.colOffset = E.rx - E.screencols + 1;
 }
 
 void refreshScreen(void) {
@@ -30,7 +46,7 @@ void refreshScreen(void) {
   drawRows(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cx - E.rowOffset) + 1, (E.cy - E.colOffset) + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cx - E.rowOffset) + 1, (E.rx - E.colOffset) + 1);
   
   abAppend(&ab, buf, strlen(buf));
 
@@ -66,10 +82,10 @@ void drawRows(struct abuf* ab) {
       }
     }
     else { //parte que printa o arquivo de texto
-      int len = E.rows[fileRow].size - E.colOffset;
+      int len = E.rows[fileRow].rsize - E.colOffset;
       if(len < 0) len = 0;
       if(len > E.screencols) len = E.screencols;
-      abAppend(ab, &E.rows[fileRow].text[E.colOffset], len);
+      abAppend(ab, &E.rows[fileRow].render[E.colOffset], len);
     } //até aqui
 
     abAppend(ab, "\x1b[K", 3); //limpa a linha de baixo

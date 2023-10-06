@@ -5,6 +5,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+void updateRow(rowOfText* row) {
+  int tabs = 0;
+  for(int j = 0; j < row->size; j++)
+    if(row->text[j] == '\t') tabs++;
+
+  free(row->render);
+  row->render = malloc(row->size + tabs*(TAB_STOP - 1) + 1);
+
+  int index = 0;
+  for(int j = 0; j < row->size; j++) {
+
+    if(row->text[j] == '\t') {
+      row->render[index++] = ' ';
+      while(index % TAB_STOP != 0) row->render[index++] = ' ';
+    }
+    else row->render[index++] = row->text[j];
+  }
+
+  row->render[index] = '\0';
+  row->rsize = index;
+}
+
 void appendRow(char* s, size_t len) {  //adiciona nova linha
   E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
 
@@ -14,6 +36,11 @@ void appendRow(char* s, size_t len) {  //adiciona nova linha
   E.rows[at].text = malloc(len+1);
   memcpy(E.rows[at].text, s, len);
   E.rows[at].text[len] = '\0';
+
+  E.rows[at].rsize = 0;
+  E.rows[at].render = NULL;
+  updateRow(&E.rows[at]);
+
   E.numRows++;
 }
 

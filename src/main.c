@@ -11,6 +11,7 @@ struct editorConfig E;
 void initEditor(void) {
   E.cx = 0;
   E.cy = 0;
+  E.rx = 0;
   E.numRows = 0;
   E.rowOffset = 0;
   E.colOffset = 0;
