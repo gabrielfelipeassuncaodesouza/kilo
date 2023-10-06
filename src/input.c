@@ -9,6 +9,23 @@
 #include <string.h>
 #include <unistd.h>
 
+void moveCursor(char key) {
+  switch(key) {
+    case 'a':
+      E.cy--;
+      break;
+    case 'd':
+      E.cy++;
+      break;
+    case 's':
+      E.cx++;
+      break;
+    case 'w':
+      E.cx--;
+      break;
+  }
+}
+
 void abAppend(struct abuf* ab, const char* s, int len) {
   char* new = realloc(ab->buf, ab->len + len);
 
@@ -61,6 +78,12 @@ void editorProcessKeyPress(void) {
       refreshScreen();
       exit(0);
       break;
+
+    case 'a':
+    case 's':
+    case 'd':
+    case 'w':
+      moveCursor(c);
+      break;
   }
 }
-
