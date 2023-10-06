@@ -1,6 +1,11 @@
 #ifndef _H_GLOBCONST
 #define _H_GLOBCONST
 
+/** PORTABLE DEFINES **/
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+//#define _WIN_SOURCE
+
 #include <termios.h>
 
 enum editorKey {
@@ -15,12 +20,19 @@ enum editorKey {
   DEL
 };
 
+typedef struct rowOfText {
+  int size;
+  char* text;
+} rowOfText;
+
 struct editorConfig {
   struct termios orig_termios;
   int screenrows;
   int screencols;
   int cx;
   int cy;
+  int numRows;
+  rowOfText row;
 };
 
 struct abuf {

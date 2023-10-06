@@ -26,22 +26,30 @@ void refreshScreen(void) {
 void drawRows(struct abuf* ab) {
   for(int x = 0; x < E.screenrows; x++) {
 
-    if(x == E.screenrows / 3) {
-      char welcome[80];
-      int welcomelen = snprintf(welcome, sizeof(welcome), "Kilo editor -- version 1.0");
+    if(x >= E.numRows) {
 
-      if(welcomelen > E.screencols) welcomelen = E.screencols;
-      int padding = (E.screencols - welcomelen) / 2;
+      if(E.numRows == 0 && x == E.screenrows / 3) {
+        char welcome[80];
+        int welcomelen = snprintf(welcome, sizeof(welcome), "Kilo editor -- version 1.0");
 
-      if(padding--) {
+        if(welcomelen > E.screencols) welcomelen = E.screencols;
+        int padding = (E.screencols - welcomelen) / 2;
+
+        if(padding--) {
+          abAppend(ab, "~", 1);
+        }
+
+        while(padding--) abAppend(ab, " ", 1);
+        abAppend(ab, welcome, welcomelen);
+      }
+      else {
         abAppend(ab, "~", 1);
       }
-
-      while(padding--) abAppend(ab, " ", 1);
-      abAppend(ab, welcome, welcomelen);
     }
     else {
-      abAppend(ab, "~", 1);
+      int len = E.row.size;
+      if(len > E.screencols) len = E.screencols;
+      abAppend(ab, E.row.text, len);
     }
 
     abAppend(ab, "\x1b[K", 3);
