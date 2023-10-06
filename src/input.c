@@ -1,4 +1,5 @@
 #include "input.h"
+#include "output.h"
 #include "raw.h"
 #include <errno.h>
 #include <stdlib.h>
@@ -20,6 +21,7 @@ void editorProcessKeyPress(void) {
 
   switch(c) {
     case CTRL_KEY('q'):
+      refreshScreen();
       exit(0);
       break;
   }

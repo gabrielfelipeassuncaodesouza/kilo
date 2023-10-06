@@ -1,3 +1,4 @@
+#include "output.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <termios.h>
@@ -6,6 +7,8 @@
 struct termios orig_termios;
 
 void die(const char* msg) {
+  refreshScreen();
+
   perror(msg);
   exit(1);
 }
