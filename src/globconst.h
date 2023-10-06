@@ -7,6 +7,8 @@ struct editorConfig {
   struct termios orig_termios;
   int screenrows;
   int screencols;
+  int cx;
+  int cy;
 };
 
 struct abuf {

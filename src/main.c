@@ -6,6 +6,9 @@
 struct editorConfig E;
 
 void initEditor(void) {
+  E.cx = 0;
+  E.cy = 0;
+
   if(getWinSize(&E.screenrows, &E.screencols) == -1)
     die("getWinSize");
 }
