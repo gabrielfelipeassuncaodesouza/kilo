@@ -32,7 +32,8 @@ struct editorConfig {
   int cx;
   int cy;
   int numRows;
-  rowOfText row;
+  rowOfText* rows;
+  int rowOffset;
 };
 
 struct abuf {

@@ -5,7 +5,17 @@
 #include <string.h>
 #include <unistd.h>
 
+void editorScroll(void) {
+  if(E.cx < E.rowOffset)
+    E.rowOffset = E.cx;
+
+  if(E.cx >= E.rowOffset + E.screenrows)
+    E.rowOffset = E.cy - E.screenrows + 1;
+}
+
 void refreshScreen(void) {
+  editorScroll();
+
   struct abuf ab = ABUF_INIT;
 
   abAppend(&ab, "\x1b[?25l", 6);
@@ -25,6 +35,8 @@ void refreshScreen(void) {
 
 void drawRows(struct abuf* ab) {
   for(int x = 0; x < E.screenrows; x++) {
+
+    int fileRow = x + E.rowOffset;
 
     if(x >= E.numRows) {
 
@@ -46,15 +58,15 @@ void drawRows(struct abuf* ab) {
         abAppend(ab, "~", 1);
       }
     }
-    else {
-      int len = E.row.size;
+    else { //parte que printa o arquivo de texto
+      int len = E.rows[fileRow].size;
       if(len > E.screencols) len = E.screencols;
-      abAppend(ab, E.row.text, len);
-    }
+      abAppend(ab, E.rows[fileRow].text, len);
+    } //até aqui
 
-    abAppend(ab, "\x1b[K", 3);
+    abAppend(ab, "\x1b[K", 3); //limpa a linha de baixo
     if(x < E.screenrows - 1) {
-      abAppend(ab, "\r\n", 2);
+      abAppend(ab, "\r\n", 2); //quebra de linha
     }
   }
 }

@@ -18,7 +18,7 @@ void moveCursor(int key) {
       if(E.cy < E.screencols - 1) E.cy++;
       break;
     case ARROW_DOWN:
-      if(E.cx < E.screenrows - 1) E.cx++;
+      if(E.cx < E.numRows) E.cx++;
       break;
     case ARROW_UP:
       if(E.cx > 0) E.cx--;

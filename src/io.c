@@ -5,6 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+void appendRow(char* s, int len) {  //adiciona nova linha
+  E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
+
+  int at = E.numRows;
+
+  E.rows[at].size = len;
+  E.rows[at].text = malloc(len+1);
+  memcpy(E.rows[at].text, s, len);
+  E.rows[at].text[len] = '\0';
+  E.numRows++;
+}
+
 void editorOpen(char* fileName) {
   FILE* f = fopen(fileName, "r");
   if(!f || f == NULL) die("fopen");
@@ -13,16 +25,11 @@ void editorOpen(char* fileName) {
   size_t lineCapacity = 0;
   ssize_t len;
 
-  len = getline(&line, &lineCapacity, f);
-  if(len != -1) {
+  while((len = getline(&line, &lineCapacity, f)) != -1) {
     while(len > 0 && (line[len - 1] == '\n' || line[len-1] == '\r'))
       len--;
 
-    E.row.size = len;
-    E.row.text = malloc(len+1);
-    memcpy(E.row.text, line, len);
-    E.row.text[len] = '\0';
-    E.numRows++;
+    appendRow(line, len);
   }
   free(line);
   fclose(f);
