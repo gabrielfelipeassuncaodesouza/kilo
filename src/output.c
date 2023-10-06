@@ -10,7 +10,7 @@ void editorScroll(void) {
     E.rowOffset = E.cx;
 
   if(E.cx >= E.rowOffset + E.screenrows)
-    E.rowOffset = E.cy - E.screenrows + 1;
+    E.rowOffset = E.cx - E.screenrows + 1;
 }
 
 void refreshScreen(void) {
@@ -24,7 +24,7 @@ void refreshScreen(void) {
   drawRows(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cx + 1, E.cy + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", ( E.cx - E.rowOffset) + 1, E.cy + 1);
   abAppend(&ab, buf, strlen(buf));
 
   abAppend(&ab, "\x1b[?25h", 6);
@@ -38,7 +38,7 @@ void drawRows(struct abuf* ab) {
 
     int fileRow = x + E.rowOffset;
 
-    if(x >= E.numRows) {
+    if(fileRow >= E.numRows) {
 
       if(E.numRows == 0 && x == E.screenrows / 3) {
         char welcome[80];

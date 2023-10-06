@@ -12,16 +12,16 @@
 void moveCursor(int key) {
   switch(key) {
     case ARROW_LEFT:
-      if(E.cy > 0) E.cy--;
+      if(E.cy != 0) E.cy--;
       break;
     case ARROW_RIGHT:
-      if(E.cy < E.screencols - 1) E.cy++;
+      if(E.cy != E.screencols - 1) E.cy++;
       break;
     case ARROW_DOWN:
       if(E.cx < E.numRows) E.cx++;
       break;
     case ARROW_UP:
-      if(E.cx > 0) E.cx--;
+      if(E.cx != 0) E.cx--;
       break;
   }
 }

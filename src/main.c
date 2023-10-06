@@ -13,6 +13,7 @@ void initEditor(void) {
   E.cy = 0;
   E.numRows = 0;
   E.rowOffset = 0;
+  E.colOffset = 0;
   E.rows = NULL;
 
   if(getWinSize(&E.screenrows, &E.screencols) == -1)

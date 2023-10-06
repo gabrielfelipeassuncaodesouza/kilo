@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void appendRow(char* s, int len) {  //adiciona nova linha
+void appendRow(char* s, size_t len) {  //adiciona nova linha
   E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
 
   int at = E.numRows;
