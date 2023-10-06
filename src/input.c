@@ -10,12 +10,22 @@
 #include <unistd.h>
 
 void moveCursor(int key) {
+  rowOfText* row = (E.cx >= E.numRows) ? NULL : &E.rows[E.cx];
+
   switch(key) {
     case ARROW_LEFT:
       if(E.cy != 0) E.cy--;
+      else if(E.cx > 0) {
+        E.cx--;
+        E.cy = E.rows[E.cx].size;
+      }
       break;
     case ARROW_RIGHT:
-      if(E.cy != E.screencols - 1) E.cy++;
+      if(row && E.cy < row->size) E.cy++;
+      else if(row && E.cy == row->size) {
+        E.cx++;
+        E.cy = 0;
+      }
       break;
     case ARROW_DOWN:
       if(E.cx < E.numRows) E.cx++;
@@ -24,6 +34,10 @@ void moveCursor(int key) {
       if(E.cx != 0) E.cx--;
       break;
   }
+
+  row = (E.cx >= E.numRows) ? NULL : &E.rows[E.cx];
+  int rowlen = row ? row->size : 0;
+  if(E.cy > rowlen) E.cy = rowlen;
 }
 
 void abAppend(struct abuf* ab, const char* s, int len) {

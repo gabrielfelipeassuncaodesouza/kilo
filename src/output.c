@@ -11,6 +11,12 @@ void editorScroll(void) {
 
   if(E.cx >= E.rowOffset + E.screenrows)
     E.rowOffset = E.cx - E.screenrows + 1;
+
+  if(E.cy < E.colOffset)
+    E.colOffset = E.cy;
+
+  if(E.cy >= E.colOffset + E.screencols)
+    E.colOffset = E.cy - E.screencols + 1;
 }
 
 void refreshScreen(void) {
@@ -24,7 +30,8 @@ void refreshScreen(void) {
   drawRows(&ab);
 
   char buf[32];
-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", ( E.cx - E.rowOffset) + 1, E.cy + 1);
+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cx - E.rowOffset) + 1, (E.cy - E.colOffset) + 1);
+  
   abAppend(&ab, buf, strlen(buf));
 
   abAppend(&ab, "\x1b[?25h", 6);
@@ -59,9 +66,10 @@ void drawRows(struct abuf* ab) {
       }
     }
     else { //parte que printa o arquivo de texto
-      int len = E.rows[fileRow].size;
+      int len = E.rows[fileRow].size - E.colOffset;
+      if(len < 0) len = 0;
       if(len > E.screencols) len = E.screencols;
-      abAppend(ab, E.rows[fileRow].text, len);
+      abAppend(ab, &E.rows[fileRow].text[E.colOffset], len);
     } //até aqui
 
     abAppend(ab, "\x1b[K", 3); //limpa a linha de baixo
