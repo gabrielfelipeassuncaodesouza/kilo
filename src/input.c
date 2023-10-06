@@ -79,8 +79,13 @@ int editorReadKey(void) {
 
         if(seq[2] == '~') {
           switch(seq[1]) {
+            case '1': return HOME;
+            case '3': return DEL;
+            case '4': return END;
             case '5': return PG_UP;
             case '6': return PG_DOWN;
+            case '7': return HOME;
+            case '8': return END;
           }
         }
       }
@@ -90,7 +95,15 @@ int editorReadKey(void) {
           case 'B': return ARROW_DOWN;
           case 'C': return ARROW_RIGHT;
           case 'D': return ARROW_LEFT;
+          case 'F': return END;
+          case 'H': return HOME;
         }
+      }
+    }
+    else if(seq[0] == 'O') {
+      switch(seq[1]) {
+        case 'F': return END;
+        case 'H': return HOME;
       }
     }
 
@@ -106,6 +119,13 @@ void editorProcessKeyPress(void) {
     case CTRL_KEY('q'):
       refreshScreen();
       exit(0);
+      break;
+
+    case HOME:
+      E.cy = 0;
+      break;
+    case END:
+      E.cy = E.screencols - 1;
       break;
 
     case PG_UP:

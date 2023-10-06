@@ -9,7 +9,10 @@ enum editorKey {
   ARROW_UP,
   ARROW_DOWN,
   PG_UP,
-  PG_DOWN
+  PG_DOWN,
+  HOME,
+  END,
+  DEL
 };
 
 struct editorConfig {
