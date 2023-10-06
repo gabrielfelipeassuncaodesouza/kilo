@@ -14,6 +14,7 @@ void raw(void) {
   struct termios raw = orig_termios;
 
   raw.c_iflag &= ~(IXON | ICRNL);
+  raw.c_oflag &= ~(OPOST);
   raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
 
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
