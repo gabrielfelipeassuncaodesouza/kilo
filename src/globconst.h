@@ -3,6 +3,15 @@
 
 #include <termios.h>
 
+enum editorKey {
+  ARROW_LEFT = 1000,
+  ARROW_RIGHT,
+  ARROW_UP,
+  ARROW_DOWN,
+  PG_UP,
+  PG_DOWN
+};
+
 struct editorConfig {
   struct termios orig_termios;
   int screenrows;

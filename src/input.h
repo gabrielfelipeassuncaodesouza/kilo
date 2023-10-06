@@ -5,7 +5,7 @@
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 
-char editorReadKey(void);
+int editorReadKey(void);
 void editorProcessKeyPress(void);
 int getCursorPosition(int* rows, int* cols);
 void abAppend(struct abuf* ab, const char* s, int len);
