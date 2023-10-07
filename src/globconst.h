@@ -2,9 +2,11 @@
 #define _H_GLOBCONST
 
 /** PORTABLE DEFINES **/
+#include <time.h>
+
 #define _DEFAULT_SOURCE
 #define _BSD_SOURCE
-//#define _WIN_SOURCE
+#define _GNU_SOURCE
 
 #define KILO_VERSION "0.0.1"
 #define TAB_STOP 8
@@ -42,6 +44,8 @@ struct editorConfig {
   int rowOffset;
   int colOffset;
   char* filename;
+  char statusMsg[80];
+  time_t statusMsg_time;
 };
 
 struct abuf {

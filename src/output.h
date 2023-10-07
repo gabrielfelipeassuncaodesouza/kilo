@@ -6,5 +6,6 @@
 void refreshScreen(void);
 void drawRows(struct abuf* ab);
 void drawStatusBar(struct abuf* ab);
+void setStatusMsg(const char* fmt, ...);
 
 #endif

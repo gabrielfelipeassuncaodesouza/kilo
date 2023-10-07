@@ -17,11 +17,13 @@ void initEditor(void) {
   E.colOffset = 0;
   E.rows = NULL;
   E.filename = NULL;
+  E.statusMsg[0] = '\0';
+  E.statusMsg_time = 0;
 
   if(getWinSize(&E.screenrows, &E.screencols) == -1)
     die("getWinSize");
 
-  E.screenrows--;
+  E.screenrows-=2;
 }
 
 int main(int argc, char** argv) {
@@ -30,6 +32,8 @@ int main(int argc, char** argv) {
   if(argc >= 2) {
     editorOpen(argv[1]);
   }
+
+  setStatusMsg("HELP: Ctrl-Q = quit"); 
 
   while(1) {
     refreshScreen();

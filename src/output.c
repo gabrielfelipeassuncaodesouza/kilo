@@ -1,6 +1,7 @@
 #include "globconst.h"
 #include "input.h"
 #include "output.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -35,6 +36,23 @@ void editorScroll(void) {
     E.colOffset = E.rx - E.screencols + 1;
 }
 
+void setStatusMsg(const char* fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(E.statusMsg, sizeof(E.statusMsg), fmt, ap);
+  va_end(ap);
+  E.statusMsg_time = time(NULL);
+}
+
+void drawMessageBar(struct abuf* ab) {
+  abAppend(ab, "\x1b[K", 3);
+  int len = strlen(E.statusMsg);
+  if(len > E.screencols) len = E.screencols;
+  if(len && time(NULL) - E.statusMsg_time < 5)
+    abAppend(ab, E.statusMsg, len);
+
+}
+
 void refreshScreen(void) {
   editorScroll();
 
@@ -45,6 +63,7 @@ void refreshScreen(void) {
 
   drawRows(&ab);
   drawStatusBar(&ab);
+  drawMessageBar(&ab);
 
   char buf[32];
   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cx - E.rowOffset) + 1, (E.rx - E.colOffset) + 1);
@@ -78,6 +97,7 @@ void drawStatusBar(struct abuf* ab) {
     }
   }
   abAppend(ab, "\x1b[m", 3);
+  abAppend(ab, "\r\n", 2);
 }
 
 void drawRows(struct abuf* ab) {
