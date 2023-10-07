@@ -16,9 +16,12 @@ void initEditor(void) {
   E.rowOffset = 0;
   E.colOffset = 0;
   E.rows = NULL;
+  E.filename = NULL;
 
   if(getWinSize(&E.screenrows, &E.screencols) == -1)
     die("getWinSize");
+
+  E.screenrows--;
 }
 
 int main(int argc, char** argv) {

@@ -45,6 +45,9 @@ void appendRow(char* s, size_t len) {  //adiciona nova linha
 }
 
 void editorOpen(char* fileName) {
+  free(E.filename);
+  E.filename = strdup(fileName); 
+
   FILE* f = fopen(fileName, "r");
   if(!f || f == NULL) die("fopen");
 

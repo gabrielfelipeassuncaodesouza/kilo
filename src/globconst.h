@@ -41,6 +41,7 @@ struct editorConfig {
   rowOfText* rows;
   int rowOffset;
   int colOffset;
+  char* filename;
 };
 
 struct abuf {
