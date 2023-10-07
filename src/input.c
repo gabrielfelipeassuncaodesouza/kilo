@@ -139,15 +139,22 @@ void editorProcessKeyPress(void) {
       E.cy = 0;
       break;
     case END:
-      E.cy = E.screencols - 1;
+      if(E.cx < E.numRows)
+        E.cy = E.rows[E.cx].size;
       break;
 
     case PG_UP:
     case PG_DOWN:
       {
+        if(c == PG_UP) E.cx = E.rowOffset;
+        else if(c == PG_DOWN) {
+          E.cx = E.rowOffset + E.screenrows - 1;
+          if(E.cx > E.numRows) E.cx = E.numRows;
+        }
+
         int times = E.screenrows;
         while(times--)
-          moveCursor(c == PG_DOWN ? ARROW_DOWN : ARROW_UP);
+          moveCursor(c == PG_UP ? ARROW_UP : ARROW_DOWN);
       }
       break;
 
