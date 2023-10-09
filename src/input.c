@@ -1,5 +1,6 @@
 #include "globconst.h"
 #include "input.h"
+#include "io.h"
 #include "output.h"
 #include "raw.h"
 #include <ctype.h>
@@ -8,6 +9,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+void rowInsertChar(rowOfText* row, int at, int c) { //user function
+  if(at < 0 || at > row->size) at = row->size;
+
+  row->text = realloc(row->text, row->size + 2);
+  memmove(&row->text[at+1], &row->text[at], row->size - at + 1)                 ;
+
+  row->size++;
+  row->text[at] = c;
+  
+  updateRow(row);
+  E.dirty++;
+} 
+
+void rowDelChar(rowOfText* row, int at) {
+  if(at < 0 || at >= row->size) return;
+
+  memmove(&row->text[at], &row->text[at + 1], row->size - at);
+  row->size--;
+  updateRow(row);
+  E.dirty++;
+}
 
 void moveCursor(int key) {
   rowOfText* row = (E.cx >= E.numRows) ? NULL : &E.rows[E.cx];
@@ -126,13 +149,44 @@ int editorReadKey(void) {
   else return c;
 }
 
+void insertChar(int c) {
+  if(E.cx == E.numRows)
+    appendRow("", 0); 
+
+  rowInsertChar(&E.rows[E.cx], E.cy, c);
+  E.cy++;
+}
+
+void delChar(void) {
+  if(E.cx == E.numRows) return;
+
+  rowOfText* row = &E.rows[E.cx];
+  if(E.cy > 0) {
+    rowDelChar(row, E.cy - 1);
+    E.cy--;
+  }
+}
+
 void editorProcessKeyPress(void) {
+  static int quit_times = 3;
+
   int c = editorReadKey();
 
   switch(c) {
+    case '\r': break;
+
     case CTRL_KEY('q'):
-      refreshScreen();
+      if(E.dirty && quit_times) {
+        setStatusMsg("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times--);
+        return;
+      }
+
+      write(STDOUT_FILENO, "\x1b[2J\x1b[H", 7);
       exit(0);
+      break;
+
+    case CTRL_KEY('s'):
+      editorSave();
       break;
 
     case HOME:
@@ -141,6 +195,13 @@ void editorProcessKeyPress(void) {
     case END:
       if(E.cx < E.numRows)
         E.cy = E.rows[E.cx].size;
+      break;
+
+    case BACKSPACE:
+    case CTRL_KEY('h'):
+    case DEL:
+      if(c == DEL) moveCursor(ARROW_RIGHT);
+      delChar();
       break;
 
     case PG_UP:
@@ -164,5 +225,15 @@ void editorProcessKeyPress(void) {
     case ARROW_LEFT:
       moveCursor(c);
       break;
+
+    case CTRL_KEY('l'):
+    case '\x1b':
+      break;
+
+    default:
+      insertChar(c);
+      break;
   }
+
+  quit_times = 3;
 }

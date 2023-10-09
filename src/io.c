@@ -1,9 +1,14 @@
 #include "io.h"
 #include "globconst.h"
+#include "output.h"
 #include "raw.h"
+
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 void updateRow(rowOfText* row) {
   int tabs = 0;
@@ -42,6 +47,7 @@ void appendRow(char* s, size_t len) {  //adiciona nova linha
   updateRow(&E.rows[at]);
 
   E.numRows++;
+  E.dirty++;
 }
 
 void editorOpen(char* fileName) {
@@ -63,4 +69,49 @@ void editorOpen(char* fileName) {
   }
   free(line);
   fclose(f);
+  E.dirty = 0;
+}
+
+char* rowsToString(int* len) {
+  int totalLen = 0;
+  for(int j = 0; j < E.numRows; j++)
+    totalLen += E.rows[j].size + 1;
+
+  *len = totalLen;
+  char* buf = malloc(totalLen);
+  char* p = buf;
+
+  for(int j = 0; j < E.numRows; j++) {
+    memcpy(p, E.rows[j].text, E.rows[j].size);
+    p += E.rows[j].size;
+    *p = '\n';
+    p++;
+  }
+
+  return buf;
+}
+
+void editorSave(void) {
+  if(E.filename == NULL) return;
+
+  int len;
+  char* buf = rowsToString(&len);
+
+  int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
+
+  if(fd != -1) {
+    if(ftruncate(fd, len) != -1) {
+      if(write(fd, buf, len) == len) {
+        close(fd);
+        free(buf);
+        E.dirty = 0;
+        setStatusMsg("%d bytes written to disk", len);
+        return;
+      }
+    }
+    close(fd);
+  }
+
+  free(buf);
+  setStatusMsg("Can't save! I/O error: %s", strerror(errno));
 }

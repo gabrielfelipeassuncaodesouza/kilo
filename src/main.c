@@ -19,6 +19,7 @@ void initEditor(void) {
   E.filename = NULL;
   E.statusMsg[0] = '\0';
   E.statusMsg_time = 0;
+  E.dirty = 0;
 
   if(getWinSize(&E.screenrows, &E.screencols) == -1)
     die("getWinSize");
@@ -33,7 +34,7 @@ int main(int argc, char** argv) {
     editorOpen(argv[1]);
   }
 
-  setStatusMsg("HELP: Ctrl-Q = quit"); 
+  setStatusMsg("HELP: Ctrl-S = save | Ctrl-Q = quit"); 
 
   while(1) {
     refreshScreen();

@@ -79,7 +79,7 @@ void refreshScreen(void) {
 void drawStatusBar(struct abuf* ab) {
   abAppend(ab, "\x1b[7m", 4);
   char status[80], rstatus[80];
-  int len = snprintf(status, sizeof(status), "%.20s - %d lines", E.filename ? E.filename : "[No name]", E.numRows);
+  int len = snprintf(status, sizeof(status), "%.20s - %d lines %s", E.filename ? E.filename : "[No name]", E.numRows, E.dirty ? "(modified)" : "");
 
   int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d", E.cx + 1, E.numRows);
 

@@ -14,6 +14,7 @@
 #include <termios.h>
 
 enum editorKey {
+  BACKSPACE = 127,
   ARROW_LEFT = 1000,
   ARROW_RIGHT,
   ARROW_UP,
@@ -46,6 +47,7 @@ struct editorConfig {
   char* filename;
   char statusMsg[80];
   time_t statusMsg_time;
+  int dirty;
 };
 
 struct abuf {
