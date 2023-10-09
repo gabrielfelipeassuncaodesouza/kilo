@@ -32,7 +32,7 @@ void updateRow(rowOfText* row) {
   row->rsize = index;
 }
 
-void appendRow(int at, char* s, size_t len) {  //adiciona nova linha
+void insertRow(int at, char* s, size_t len) {  //adiciona nova linha
   if(at < 0 || at > E.numRows) return;
 
   E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
@@ -81,7 +81,7 @@ void editorOpen(char* fileName) {
     while(len > 0 && (line[len - 1] == '\n' || line[len-1] == '\r'))
       len--;
 
-    appendRow(E.numRows, line, len);
+    insertRow(E.numRows, line, len);
   }
   free(line);
   fclose(f);

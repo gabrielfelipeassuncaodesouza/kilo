@@ -161,7 +161,7 @@ int editorReadKey(void) {
 
 void insertChar(int c) {
   if(E.cx == E.numRows)
-    appendRow(E.numRows, "", 0); 
+    insertRow(E.numRows, "", 0); 
 
   rowInsertChar(&E.rows[E.cx], E.cy, c);
   E.cy++;
@@ -184,13 +184,32 @@ void delChar(void) {
   }
 }
 
+void insertNewLine(void) {
+  if(E.cx == 0) {
+    insertRow(E.cx, "", 0); 
+  }
+  else {
+    rowOfText* row = &E.rows[E.cx];
+    insertRow(E.cx + 1, &row->text[E.cy], row->size - E.cy);
+    row = &E.rows[E.cx];
+    row->size = E.cy;
+    row->text[row->size] = '\0';
+    updateRow(row);
+  }
+
+  E.cx++;
+  E.cy = 0;
+}
+
 void editorProcessKeyPress(void) {
   static int quit_times = 3;
 
   int c = editorReadKey();
 
   switch(c) {
-    case '\r': break;
+    case '\r': 
+      insertNewLine();
+      break;
 
     case CTRL_KEY('q'):
       if(E.dirty && quit_times) {

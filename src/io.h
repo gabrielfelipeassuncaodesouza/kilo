@@ -5,7 +5,7 @@
 
 void editorOpen(char *fileName);
 void updateRow(rowOfText* row);
-void appendRow(int at, char* s, size_t len);
+void insertRow(int at, char* s, size_t len);
 void editorSave(void);
 void delRow(int at);
 
