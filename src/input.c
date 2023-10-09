@@ -14,11 +14,21 @@ void rowInsertChar(rowOfText* row, int at, int c) { //user function
   if(at < 0 || at > row->size) at = row->size;
 
   row->text = realloc(row->text, row->size + 2);
-  memmove(&row->text[at+1], &row->text[at], row->size - at + 1)                 ;
+  memmove(&row->text[at+1], &row->text[at], row->size - at + 1);
 
   row->size++;
   row->text[at] = c;
   
+  updateRow(row);
+  E.dirty++;
+} 
+
+void rowAppendString(rowOfText *row, char *s, int len) {
+  row->text = realloc(row->text, row->size + len - 1);
+  memcpy(&row->text[row->size], s, len + 1);
+  
+  row->size += len;
+  row->text[row->size] = '\0';
   updateRow(row);
   E.dirty++;
 } 
@@ -151,7 +161,7 @@ int editorReadKey(void) {
 
 void insertChar(int c) {
   if(E.cx == E.numRows)
-    appendRow("", 0); 
+    appendRow(E.numRows, "", 0); 
 
   rowInsertChar(&E.rows[E.cx], E.cy, c);
   E.cy++;
@@ -159,11 +169,18 @@ void insertChar(int c) {
 
 void delChar(void) {
   if(E.cx == E.numRows) return;
+  if(E.cx == 0 && E.cy == 0) return;
 
   rowOfText* row = &E.rows[E.cx];
   if(E.cy > 0) {
     rowDelChar(row, E.cy - 1);
     E.cy--;
+  }
+  else {
+    E.cy = E.rows[E.cx - 1].size;
+    rowAppendString(&E.rows[E.cx - 1], row->text, row->size);
+    delRow(E.cx);
+    E.cx--;
   }
 }
 

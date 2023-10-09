@@ -32,10 +32,11 @@ void updateRow(rowOfText* row) {
   row->rsize = index;
 }
 
-void appendRow(char* s, size_t len) {  //adiciona nova linha
-  E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
+void appendRow(int at, char* s, size_t len) {  //adiciona nova linha
+  if(at < 0 || at > E.numRows) return;
 
-  int at = E.numRows;
+  E.rows = realloc(E.rows, sizeof(rowOfText) * (E.numRows + 1));
+  memmove(&E.rows[at + 1], &E.rows[at], sizeof(rowOfText) * (E.numRows - at));
 
   E.rows[at].size = len;
   E.rows[at].text = malloc(len+1);
@@ -47,6 +48,21 @@ void appendRow(char* s, size_t len) {  //adiciona nova linha
   updateRow(&E.rows[at]);
 
   E.numRows++;
+  E.dirty++;
+}
+
+void freeRow(rowOfText* row) {
+  free(row->render);
+  free(row->text);
+}
+
+void delRow(int at) {
+  if(at < 0 || at >= E.numRows) return;
+
+  freeRow(&E.rows[at]);
+  memmove(&E.rows[at], &E.rows[at + 1], sizeof(rowOfText) * (E.numRows - at - 1));
+
+  E.numRows--;
   E.dirty++;
 }
 
@@ -65,7 +81,7 @@ void editorOpen(char* fileName) {
     while(len > 0 && (line[len - 1] == '\n' || line[len-1] == '\r'))
       len--;
 
-    appendRow(line, len);
+    appendRow(E.numRows, line, len);
   }
   free(line);
   fclose(f);
