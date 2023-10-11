@@ -69,7 +69,12 @@ char* editorPrompt(char* prompt) {
 
     int c = editorReadKey();
 
-    if(c == '\r') {
+    if(c == '\x1b') {
+      setStatusMsg("");
+      free(buf);
+      return NULL;
+    }
+    else if(c == '\r') {
       if(buflen != 0) {
         setStatusMsg("");
         return buf;

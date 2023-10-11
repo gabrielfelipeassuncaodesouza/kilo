@@ -109,7 +109,12 @@ char* rowsToString(int* len) {
 
 void editorSave(void) {
   if(E.filename == NULL) {
-    E.filename = editorPrompt("Save as: %s");
+    E.filename = editorPrompt("Save as: %s (ESC TO CANCEL)");
+
+    if(E.filename == NULL) {
+      setStatusMsg("Save aborted");
+      return;
+    }
   }
 
   int len;
