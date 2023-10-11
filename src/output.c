@@ -1,8 +1,11 @@
 #include "globconst.h"
 #include "input.h"
 #include "output.h"
+
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -51,6 +54,37 @@ void drawMessageBar(struct abuf* ab) {
   if(len && time(NULL) - E.statusMsg_time < 5)
     abAppend(ab, E.statusMsg, len);
 
+}
+
+char* editorPrompt(char* prompt) {
+  size_t bufSize = 128;
+  char* buf = malloc(bufSize);
+
+  size_t buflen = 0;
+  buf[0] = '\0';
+
+  while(1) {
+    setStatusMsg(prompt, buf);
+    refreshScreen();
+
+    int c = editorReadKey();
+
+    if(c == '\r') {
+      if(buflen != 0) {
+        setStatusMsg("");
+        return buf;
+      }
+    }
+    else if(!iscntrl(c) && c < 128) {
+      if(buflen == bufSize - 1) {
+        bufSize *= 2;
+        buf = realloc(buf, bufSize);
+      }
+
+      buf[buflen++] = c;
+      buf[buflen] = '\0';
+    }
+  }
 }
 
 void refreshScreen(void) {

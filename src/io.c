@@ -108,7 +108,9 @@ char* rowsToString(int* len) {
 }
 
 void editorSave(void) {
-  if(E.filename == NULL) return;
+  if(E.filename == NULL) {
+    E.filename = editorPrompt("Save as: %s");
+  }
 
   int len;
   char* buf = rowsToString(&len);
