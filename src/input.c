@@ -23,9 +23,9 @@ void rowInsertChar(rowOfText* row, int at, int c) { //user function
   E.dirty++;
 } 
 
-void rowAppendString(rowOfText *row, char *s, int len) {
-  row->text = realloc(row->text, row->size + len - 1);
-  memcpy(&row->text[row->size], s, len + 1);
+void rowAppendString(rowOfText *row, char *s, size_t len) {
+  row->text = realloc(row->text, row->size + len + 1);
+  memcpy(&row->text[row->size], s, len);
   
   row->size += len;
   row->text[row->size] = '\0';
