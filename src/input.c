@@ -185,7 +185,7 @@ void delChar(void) {
 }
 
 void insertNewLine(void) {
-  if(E.cx == 0) {
+  if(E.cy == 0) {
     insertRow(E.cx, "", 0); 
   }
   else {
