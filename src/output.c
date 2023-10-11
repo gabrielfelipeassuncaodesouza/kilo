@@ -69,7 +69,10 @@ char* editorPrompt(char* prompt) {
 
     int c = editorReadKey();
 
-    if(c == '\x1b') {
+    if(c == DEL || c == CTRL_KEY('h') || c == BACKSPACE) {
+      if(buflen != 0) buf[--buflen] = '\0';
+    }
+    else if(c == '\x1b') {
       setStatusMsg("");
       free(buf);
       return NULL;
