@@ -7,7 +7,7 @@ void refreshScreen(void);
 void drawRows(struct abuf* ab);
 void drawStatusBar(struct abuf* ab);
 void setStatusMsg(const char* fmt, ...);
-char* editorPrompt(char* prompt);
+char* editorPrompt(char* prompt, void (*callback)(char*, int));
 int editorRowRxToCy(rowOfText* row, int rx);
 
 #endif

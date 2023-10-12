@@ -72,7 +72,7 @@ void drawMessageBar(struct abuf* ab) {
 
 }
 
-char* editorPrompt(char* prompt) {
+char* editorPrompt(char* prompt, void (*callback)(char*, int)) {
   size_t bufSize = 128;
   char* buf = malloc(bufSize);
 
@@ -90,12 +90,14 @@ char* editorPrompt(char* prompt) {
     }
     else if(c == '\x1b') {
       setStatusMsg("");
+      if(callback) callback(buf, c);
       free(buf);
       return NULL;
     }
     else if(c == '\r') {
       if(buflen != 0) {
         setStatusMsg("");
+        if(callback) callback(buf, c);
         return buf;
       }
     }
@@ -108,6 +110,7 @@ char* editorPrompt(char* prompt) {
       buf[buflen++] = c;
       buf[buflen] = '\0';
     }
+    if(callback) callback(buf, c);
   }
 }
 

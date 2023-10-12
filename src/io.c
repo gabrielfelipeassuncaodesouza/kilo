@@ -109,7 +109,7 @@ char* rowsToString(int* len) {
 
 void editorSave(void) {
   if(E.filename == NULL) {
-    E.filename = editorPrompt("Save as: %s (ESC TO CANCEL)");
+    E.filename = editorPrompt("Save as: %s (ESC TO CANCEL)", NULL);
 
     if(E.filename == NULL) {
       setStatusMsg("Save aborted");
@@ -139,10 +139,10 @@ void editorSave(void) {
   setStatusMsg("Can't save! I/O error: %s", strerror(errno));
 }
 
-void editorFind(void) {
-  char* query = editorPrompt("Search: %s (ESC to cancel)");
-
-  if(query == NULL) return;
+void editorFindCallback(char* query, int key) {
+  if(key == '\r' || key == '\x1b') {
+    return;
+  }
 
   for(int i = 0; i < E.numRows; i++) {
     rowOfText* row = &E.rows[i];
@@ -155,5 +155,21 @@ void editorFind(void) {
       break;
     }
   }
-  free(query);
+}
+
+void editorFind(void) {
+  int saved_cx = E.cx;
+  int saved_cy = E.cy;
+  int saved_coloff = E.colOffset;
+  int saved_rowoff = E.rowOffset;
+
+  char* query = editorPrompt("Search: %s (ESC to cancel)", editorFindCallback);
+
+  if(query) free(query);
+  else {
+    E.cx = saved_cx;
+    E.cy = saved_cy;
+    E.colOffset = saved_coloff;
+    E.rowOffset = saved_rowoff;
+  }
 }
