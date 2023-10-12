@@ -138,3 +138,22 @@ void editorSave(void) {
   free(buf);
   setStatusMsg("Can't save! I/O error: %s", strerror(errno));
 }
+
+void editorFind(void) {
+  char* query = editorPrompt("Search: %s (ESC to cancel)");
+
+  if(query == NULL) return;
+
+  for(int i = 0; i < E.numRows; i++) {
+    rowOfText* row = &E.rows[i];
+    char* match = strstr(row->render, query);
+
+    if(match) {
+      E.cx = i;
+      E.cy = editorRowRxToCy(row, match - row->render);
+      E.rowOffset = E.numRows;
+      break;
+    }
+  }
+  free(query);
+}

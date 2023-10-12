@@ -11,4 +11,5 @@ int getCursorPosition(int* rows, int* cols);
 void abAppend(struct abuf* ab, const char* s, int len);
 void abFree(struct abuf* ab);
 void rowAppendString(rowOfText* row, char* s, size_t len);
+
 #endif

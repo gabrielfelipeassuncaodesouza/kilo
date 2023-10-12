@@ -233,6 +233,10 @@ void editorProcessKeyPress(void) {
         E.cy = E.rows[E.cx].size;
       break;
 
+    case CTRL_KEY('f'):
+      editorFind();
+      break;
+
     case BACKSPACE:
     case CTRL_KEY('h'):
     case DEL:

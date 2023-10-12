@@ -20,6 +20,22 @@ int editorRowCyToRx(rowOfText* row, int cy) {
   return rx;
 }
 
+int editorRowRxToCy(rowOfText* row, int rx) {
+  int cur_rx = 0;
+ 
+  int cy;
+  for(cy = 0; cy < row->size; cy++) {
+
+    if(row->text[cy] == '\t')
+      cur_rx += (TAB_STOP - 1) - (cur_rx % TAB_STOP);
+
+    cur_rx++;
+
+    if(cur_rx > rx) return cy;
+  }
+  return cy;
+}
+
 void editorScroll(void) {
   E.rx = 0;
   if(E.cx < E.numRows) {

@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     editorOpen(argv[1]);
   }
 
-  setStatusMsg("HELP: Ctrl-S = save | Ctrl-Q = quit"); 
+  setStatusMsg("HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find"); 
 
   while(1) {
     refreshScreen();
