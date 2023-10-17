@@ -12,3 +12,5 @@ The 1.0 version will contain all instructions to run it and how to contribuite t
 - [ ] Word Wrap
 - [ ] Line numeration
 - [ ] Commands
+
+Thanks for visiting :smile:
